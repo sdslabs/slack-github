@@ -1,17 +1,38 @@
+/* required dependencies */
 var request = require('request');
 var express = require('express');
+
+/* app instance */
 var app = express();
 
+/* app configurations */
 app.use(express.logger());
 app.use(express.bodyParser());
 
+/* redirects to GitHub Repo of the module */
 app.get('/', function(req, res) {
-  res.send('Hello Cruel World!');
+  res.redirect('https://github.com/sdslabs/slack-github');
 });
 
-app.post('/', function(req, res) {
+/* config variables */
+var Channel = process.env.CHANNEL;
+var Username = process.env.USERNAME;
+var Url = process.env.URL;
 
-  var textTosend = '';
+/* checks, if all required config vars are present or not */
+var checkConfig = function() {
+  if((typeof(Url)!='undefined') && (typeof(Username)!='undefined') && (typeof(Channel)!='undefined')){
+    return true;
+  }
+
+  else{
+    return false;
+  }
+}
+
+/* returns genarated message to send using request payload by GitHub */
+var generateMessage = function(req) {
+  var result = '';
 
   var Body = req.body;
   var Data = JSON.parse(Body.payload);
@@ -20,24 +41,37 @@ app.post('/', function(req, res) {
   {
     var commit = Data.commits[i];
 
-    textTosend += '<@' + commit.author.username + '>' + ' <' +commit.url+  '|committed:> ' + commit.message;
-    textTosend += '\n';
-  }
-  
-  var options = {
-    url: ''+process.env.webhook_url+'',
-    method: 'POST',
-    body: {
-    		"channel": "#"+process.env.slack_channel+"", "username": ""+process.env.slack_username+"", "text": "" + textTosend + ""
-    },
-    json: true
+    result += '<@' + commit.author.username + '>' + ' <' +commit.url+  '|committed:> ' + commit.message;
+    result += '\n';
   }
 
-  request(options, function (err, res, body) {
-    var headers = res.headers
-    var statusCode = res.statusCode
-    res.send(statusCode);
-  });
+  return result;
+}
+
+/*
+triggers on a POST request by GitHub webhook
+and send message to slack-channel, according to commit detail
+*/
+app.post('/', function(req, res) {
+
+  /* send message only if all config vars are present */
+  if(checkConfig())
+  {
+    var options = {
+      url: ''+Url+'',
+      method: 'POST',
+      body: {
+          "channel": "#"+Channel+"", "username": ""+Username+"", "text": "" + generateMessage(req) + ""
+      },
+      json: true
+    }
+
+    request(options, function (err, res, body) {
+      var headers = res.headers
+      var statusCode = res.statusCode
+      res.send(statusCode);
+    });
+  }
 
 });
 
