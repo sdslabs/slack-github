@@ -52,15 +52,15 @@ app.post('/', function(req, res) {
 
     /* use default channel and username if they are not present in config */
     options.body = {};
-    if(channel) {options.body['channel'] = ''+ channel +'';}
+    if(channel) {options.body['channel'] = '#'+ channel +'';}
     if(username) {options.body['username'] = ''+ username +'';}
     options.body['text'] = generateMessage(req);
 
     options.json = true;
 
     request(options, function (err, res, body) {
-      var headers = res.headers
-      var statusCode = res.statusCode
+      var headers = res.headers;
+      var statusCode = res.statusCode;
       res.send(statusCode);
     });
   }
