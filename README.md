@@ -4,14 +4,22 @@ slack-GitHub
 
 How to use
 ==========
-1. clone the repository : **git clone git@github.com:sdslabs/slack-github.git**
-2. add remote for your heroku application address **git remote add git@heroku.com:YOUR-APP-NAME.git**
-3. add heroku config variables..
->(URL variable is required) 
-$ heroku config:set URL=Your-Slack-Incoming-Webhook-Url
-(USERNAME and CHANNEL variables are optional)
-4. deploy the application to heroku.
-5. Add Your heroku app's address to your GitHub repo's Webhook Settings.
+* clone the repository : `git clone git@github.com:sdslabs/slack-github.git`
+* add remote for your heroku application address `git remote add git@heroku.com:YOUR-APP-NAME.git`
+* add heroku config variables..
+
+>URL variable is required 
+
+`$ heroku config:set URL=Your-Slack-Incoming-Webhook-Url`
+
+> `optional variables`
+
+>USERNAME (username, who you want to send messages in chat, ex. bot)
+
+>CHANNEL (channel in slack client for messages, ex. general)
+
+* deploy the application to heroku.
+* Add Your heroku app's address to your GitHub repo's Webhook Settings.
 
 ![image][1]
 
@@ -20,7 +28,12 @@ $ heroku config:set URL=Your-Slack-Incoming-Webhook-Url
 <hr>
 
 
-[slack-GitHub] is built with love at [SDSLabs]
+>[slack-GitHub] is built with love at [SDSLabs]
+
+License
+=======
+Licenced under MIT Licence. Feel free to contribute.
+
 
 
   [slack-GitHub]: https://github.com/sdslabs/slack-github
