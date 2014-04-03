@@ -23,12 +23,12 @@ var url = process.env.URL;
 var generateMessage = function(req) {
   var result = '';
 
-  var Body = req.body;
-  var Data = JSON.parse(Body.payload);
+  var body = req.body;
+  var data = JSON.parse(body.payload);
 
-  for(var i=0;i<Data.commits.length;i++)
+  for(var i=0;i<data.commits.length;i++)
   {
-    var commit = Data.commits[i];
+    var commit = data.commits[i];
 
     result += '<@' + commit.author.username + '>' + ' <' +commit.url+  '|committed:> ' + commit.message;
     result += '\n';
