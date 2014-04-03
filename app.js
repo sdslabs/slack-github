@@ -15,20 +15,9 @@ app.get('/', function(req, res) {
 });
 
 /* config variables */
-var Channel = process.env.CHANNEL;
-var Username = process.env.USERNAME;
-var Url = process.env.URL;
-
-/* checks, if all required config vars are present or not */
-var checkConfig = function() {
-  if((typeof(Url)!='undefined') && (typeof(Username)!='undefined') && (typeof(Channel)!='undefined')){
-    return true;
-  }
-
-  else{
-    return false;
-  }
-}
+var channel = process.env.CHANNEL;
+var username = process.env.USERNAME;
+var url = process.env.URL;
 
 /* returns genarated message to send using request payload by GitHub */
 var generateMessage = function(req) {
@@ -54,17 +43,20 @@ and send message to slack-channel, according to commit detail
 */
 app.post('/', function(req, res) {
 
-  /* send message only if all config vars are present */
-  if(checkConfig())
+  /* works only, if url config var is there */
+  if(url)
   {
-    var options = {
-      url: ''+Url+'',
-      method: 'POST',
-      body: {
-          "channel": "#"+Channel+"", "username": ""+Username+"", "text": "" + generateMessage(req) + ""
-      },
-      json: true
-    }
+    var options = {};
+    options.url = url;
+    options.method = 'POST';
+
+    /* use default channel and username if they are not present in config */
+    options.body = {};
+    if(channel) {options.body['channel'] = ''+ channel +'';}
+    if(username) {options.body['username'] = ''+ username +'';}
+    options.body['text'] = generateMessage(req);
+
+    options.json = true;
 
     request(options, function (err, res, body) {
       var headers = res.headers
