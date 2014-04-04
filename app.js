@@ -29,8 +29,9 @@ var generateMessage = function(req) {
   for(var i=0;i<data.commits.length;i++)
   {
     var commit = data.commits[i];
+    var repo = data.repository;
 
-    result += '<@' + commit.author.username + '>' + ' <' +commit.url+  '|committed:> ' + commit.message;
+    result += '<@' + commit.author.username + '>' + ' <' +commit.url+  '|committed:> in <' + repo.url + '|' + repo.name + '> :' + commit.message;
     result += '\n';
   }
 
