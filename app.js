@@ -23,8 +23,7 @@ var url = process.env.URL;
 var generateMessage = function(req) {
   var result = '';
 
-  var body = req.body;
-  var data = JSON.parse(body.payload);
+  var data = req.body;
 
   for(var i=0;i<data.commits.length;i++)
   {
@@ -47,6 +46,11 @@ app.post('/', function(req, res) {
   /* works only, if url config var is there */
   if(url)
   {
+    console.log("Responding to event '%s'", req.headers['x-github-event'])
+    if (req.headers['x-github-event'] === 'ping') {
+      return res.status(200).json({value: 'pong'});
+    }
+
     var options = {};
     options.url = url;
     options.method = 'POST';
@@ -55,13 +59,14 @@ app.post('/', function(req, res) {
     options.body = {};
     if(channel) {options.body['channel'] = '#'+ channel +'';}
     if(username) {options.body['username'] = ''+ username +'';}
+    console.log("Would be sending message '%s'", generateMessage(req));
     options.body['text'] = generateMessage(req);
 
     options.json = true;
 
-    request(options, function (err, res, body) {
-      var headers = res.headers;
-      var statusCode = res.statusCode;
+    request(options, function (err, response, body) {
+      var headers = response.headers;
+      var statusCode = response.statusCode;
       res.send(statusCode);
     });
   }
