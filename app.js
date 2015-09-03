@@ -47,10 +47,11 @@ app.post('/', function(req, res) {
   /* works only, if url config var is there */
   if(url)
   {
+    console.log("Responding to event '%s'", req.headers['x-github-event'])
     if (req.headers['x-github-event'] === 'ping') {
       return res.status(200).json({value: 'pong'});
     }
-    
+
     var options = {};
     options.url = url;
     options.method = 'POST';
